@@ -7,5 +7,8 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using ASP.NET_Web_API_DevCreed.Dtos;
+global using ASP.NET_Web_API_DevCreed.Services.GenreServices;
+global using ASP.NET_Web_API_DevCreed.Services.MovieServices;
+global using AutoMapper;
 
 

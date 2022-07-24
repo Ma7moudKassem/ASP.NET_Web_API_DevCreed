@@ -1,3 +1,5 @@
+using ASP.NET_Web_API_DevCreed.Services.MovieServices;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -5,6 +7,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
          options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<IGenreServices, GenreServices>();
+builder.Services.AddTransient<IMovieServices, MovieServices>();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new OpenApiInfo

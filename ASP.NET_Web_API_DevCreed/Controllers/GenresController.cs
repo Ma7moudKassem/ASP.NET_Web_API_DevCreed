@@ -1,41 +1,51 @@
-﻿
-namespace ASP.NET_Web_API_DevCreed.Controllers
+﻿namespace ASP.NET_Web_API_DevCreed.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IGenreServices _genreServices;
 
-        public GenresController(ApplicationDbContext context)
+        public GenresController(IGenreServices genreServices)
         {
-            _context = context;
+            _genreServices = genreServices;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetGenresAll()
         {
-            var genres = await _context.Genres.OrderBy(e=>e.Name).ToListAsync();
+            var genres = await _genreServices.GetAll();
             return Ok(genres);
         }
         [HttpPost]
         public async Task<IActionResult> AddGenre(GenreDto dto)
         {
             var genre = new Genre {Name = dto.Name };
-            await _context.Genres.AddAsync(genre);
-            _context.SaveChanges();
+            await _genreServices.Add(genre);
             return Ok(genre);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGenre(int id ,[FromBody] GenreDto dto)
+        public async Task<IActionResult> UpdateGenre(byte id ,[FromBody] GenreDto dto)
         {
-            var genreFromDb = await _context.Genres.SingleOrDefaultAsync(e => e.Id == id);
+            var genreFromDb = await _genreServices.GetById(id);
             if (genreFromDb == null)
                 return NotFound($"No genre was found with ID: {id}");
 
             genreFromDb.Name = dto.Name;
-            _context.SaveChanges();
+            _genreServices.Update(genreFromDb);
             return Ok(genreFromDb);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(byte id)
+        {
+            var genreFromDb = await _genreServices.GetById(id);
+            if (genreFromDb == null)
+                return NotFound($"No genre was found with ID: {id}");
+
+            _genreServices.Delete(genreFromDb);
+
+            return Ok();
         }
     }
 }
